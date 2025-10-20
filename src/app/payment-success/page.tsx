@@ -9,13 +9,34 @@ export default function PaymentSuccess() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
+
+  // ✅ Handle client-side only state
+  const [isClient, setIsClient] = useState(false);
   const [isSuccess, setIsSuccess] = useState(true);
 
   useEffect(() => {
-    if (!orderId) {
+    // ✅ Only run on client-side
+    setIsClient(true);
+  }, []);
+
+  // ✅ Handle redirect for missing orderId (client-side only)
+  useEffect(() => {
+    if (isClient && !orderId) {
       router.push("/menu");
     }
-  }, [orderId, router]);
+  }, [orderId, isClient, router]);
+
+  // ✅ Show loading state during SSR
+  if (!isClient) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: "var(--background)" }}
+      >
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div
