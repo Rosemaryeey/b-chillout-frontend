@@ -1,13 +1,13 @@
 // component/menuCard.tsx
 import React from "react";
-
 export interface MenuItem {
-  _id: string;
+  id: number;
   name: string;
   description: string;
   price: number;
   image: string;
-  category: string;
+  link: string; // required if you use it in data-menu
+  category?: string;
   createdAt?: string;
 }
 

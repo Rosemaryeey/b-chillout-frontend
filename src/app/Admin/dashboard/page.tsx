@@ -43,7 +43,7 @@ export default function AdminDashboard() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
-    const router = useRouter();
+  const router = useRouter();
   const [admin, setAdmin] = useState(false);
   useEffect(() => {
     const isAdmin = localStorage.getItem("isAdmin") === "true";
@@ -73,7 +73,7 @@ export default function AdminDashboard() {
       const [ordersRes, menuRes] = await Promise.all([
         fetch("http://localhost:3000/orders", {
           headers: {
-            "x-admin-password": process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "",
+            "x-admin-password": process.env.ADMIN_PASSWORD || "",
           },
         }),
         fetch("http://localhost:3000/menu"),
@@ -97,7 +97,7 @@ export default function AdminDashboard() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-password": process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "",
+          "x-admin-password": process.env.ADMIN_PASSWORD || "",
         },
         body: JSON.stringify({ status }),
       });
@@ -113,7 +113,7 @@ export default function AdminDashboard() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-password": process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "",
+          "x-admin-password": process.env.ADMIN_PASSWORD || "",
         },
         body: JSON.stringify({ transferDetails: {} }),
       });
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-password": process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "",
+          "x-admin-password": process.env.ADMIN_PASSWORD || "",
         },
         body: JSON.stringify({
           ...newItem,
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
       await fetch(`http://localhost:3000/menu/${itemId}`, {
         method: "DELETE",
         headers: {
-          "x-admin-password": process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "",
+          "x-admin-password": process.env.ADMIN_PASSWORD || "",
         },
       });
       fetchAllData();
