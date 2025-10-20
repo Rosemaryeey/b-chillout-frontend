@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+
+:root {
+   --foreground: #1A1A1A;
+  --background: #f3d7c3;             /* Warm Cream */
+  --stubborn:  #f3aa7de4;
+
+  --color-accent: #014221;
+  --color-accent-hover: #023C1C;
+
+  --color-contrast: #7f342f;         /* Earthy Brown */
+  --color-contrast-hover: #50270c;
+
+  --color-highlight: #bb591c;        /* Burnt Orange / Gold */
+  --color-highlight-hover: #fab92e;
+
+  --muted: #F5F5F5;
+
+}
+
+/* Light mode override */
+html.light {
+  --foreground: #1A1A1A;
+  --background: #f3d7c3;             /* Warm Cream */
+  --stubborn:   #f3aa7de4;
+
+  --color-accent: #014221;
+  --color-accent-hover: #023C1C;
+
+  --color-contrast: #7f342f;         /* Earthy Brown */
+  --color-contrast-hover: #50270c;
+
+  --color-highlight: #c45d1c;        /* Burnt Orange / Gold */
+  --color-highlight-hover: #E6C84A;
+
+
+   --muted: #6c6969;
+
+   --bg-start: rgba(116, 115, 115, 0.4);
+  --bg-mid: rgba(220, 217, 217, 0.3);
+  --bg-end: rgba(66, 65, 65, 0.6);
+  --accent: #3b82f6; /* blue-500 */
+}
+
+/* Dark mode override */
+html.dark {
+  --foreground: #FFFFFF;
+  --background:  #1b0d04;
+  --stubborn: #341908;             /* Deep dark background */
+  
+  --color-accent: #027d3e;
+  --color-accent-hover: #0C5B32;
+  
+  --color-contrast: #c45d1c;         /* Burnt Orange highlight in dark */
+  --color-contrast-hover: #7f342f;   /* Earthy Brown hover */
+  
+  --color-highlight: #E6C84A;        /* Gold highlight */
+  --color-highlight-hover: #c45d1c;
+  
+  --muted: #F5F5F5;
+
+
+  --bg-start: rgba(0, 0, 0, 0.6);
+  --bg-mid: rgba(15, 15, 15, 0.5);
+  --bg-end: rgba(5, 4, 4, 0.7);
+  --accent: #60a5fa; /* blue-400 */
+ 
+}
+
+
+
+
+/* Apply global text + background */
+body {
+  color: var(--foreground);
+  background-color: var(--background);
+}
+
+/* Example button */
+.button {
+  background-color: var(--color-primary);
+  color: var(--foreground);
+  transition: background-color 0.2s;
+}
+.button:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* Accent & Contrast usage */
+.accent {
+  color: var(--color-accent);
+}
+.contrast {
+  color: var(--color-contrast);
+}
+
+
+
+.btn-primary {
+  @apply px-5 py-2 rounded-md font-medium transition-all duration-300 ease-in-out;
+  background-color: var(--color-primary);
+  color: var(--stubborn);
+}
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 5px 30px var(--color-accent);
+}
+
+.btn-outline {
+  @apply px-5 py-2 rounded-md border font-medium transition-all duration-300 ease-in-out;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.btn-outline:hover {
+  background-color: var(--color-accent);
+  color: var(--stubborn);
+  box-shadow: 0 5px 30px var(--color-accent);
+}
+
+
+
+
+
