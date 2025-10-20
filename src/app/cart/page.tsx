@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useCart } from "../context/CartContext";
 
 interface MenuItem {
-  _id: string;
+  id: string;
   name: string;
   description: string;
   price: number;
@@ -15,7 +15,7 @@ interface MenuItem {
 }
 
 interface CartItem {
-  _id: string;
+  id: string;
   menuItem: MenuItem;
   quantity: number;
 }
@@ -112,10 +112,10 @@ export default function CartPage() {
                 </div>
                 <div className="divide-y">
                   {cartItems.map((cartItem) => (
-                    <div key={cartItem._id} className="p-6 relative">
+                    <div key={cartItem.id} className="p-6 relative">
                       {/* X icon for removal */}
                       <button
-                        onClick={() => removeItem(cartItem.menuItem._id)}
+                        onClick={() => removeItem(cartItem.menuItem.id)}
                         className="absolute top-2 right-2 w-6 h-6 text-[var(--foreground)] rounded-full flex items-center justify-center hover:bg-red-600 transition text-sm font-bold"
                         title="Remove item"
                       >

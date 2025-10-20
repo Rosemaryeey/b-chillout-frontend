@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 interface MenuItem {
-  _id: string;
+  id: string;
   name: string;
   description: string;
   price: number;
@@ -21,7 +21,7 @@ interface OrderItem {
 }
 
 interface Order {
-  _id: string;
+  id: string;
   customerDetails: { name: string; phone: string; address: string };
   totalAmount: number;
   paymentStatus: string;
@@ -336,7 +336,7 @@ export default function AdminDashboard() {
             <div className="space-y-4">
               {orders.map((order) => (
                 <div
-                  key={order._id}
+                  key={order.id}
                   className="bg-[var(--stubborn)] p-4 rounded shadow"
                 >
                   <div className="flex justify-between items-start mb-2">
@@ -385,7 +385,7 @@ export default function AdminDashboard() {
                     {order.paymentMethod === "transfer" &&
                       order.paymentStatus === "pending" && (
                         <button
-                          onClick={() => confirmPayment(order._id)}
+                          onClick={() => confirmPayment(order.id)}
                           className="px-3 py-1 bg-[var(--color-accent)] text-[var(--foreground)] text-sm rounded hover:bg-[var(--color-accent)]"
                         >
                           Confirm Payment
@@ -396,7 +396,7 @@ export default function AdminDashboard() {
                       <select
                         value={order.paymentStatus}
                         onChange={(e) =>
-                          updateOrderStatus(order._id, e.target.value)
+                          updateOrderStatus(order.id, e.target.value)
                         }
                         className="text-sm p-1 border rounded bg-[var(--color-contrast)]"
                       >
@@ -419,7 +419,7 @@ export default function AdminDashboard() {
             <div className="space-y-4 max-h-96 overflow-y-auto">
               {menuItems.map((item) => (
                 <div
-                  key={item._id}
+                  key={item.id}
                   className="bg-[var(--stubborn)] p-4 rounded shadow flex justify-between items-center"
                 >
                   <div>
@@ -429,7 +429,7 @@ export default function AdminDashboard() {
                     </p>
                   </div>
                   <button
-                    onClick={() => handleDeleteItem(item._id)}
+                    onClick={() => handleDeleteItem(item.id)}
                     className="px-3 py-1 bg-red-500 text-[var(--foreground)] text-sm rounded hover:bg-red-600"
                   >
                     Delete

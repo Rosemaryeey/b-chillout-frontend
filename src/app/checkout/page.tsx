@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useCart } from "../context/CartContext";
 
 interface MenuItem {
-  _id: string;
+  id: string;
   name: string;
   price: number;
 }
@@ -64,7 +64,6 @@ export default function CheckoutPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-
   const initializePaystackPayment = async (orderId: string, amount: number) => {
     try {
       const res = await fetch("http://localhost:3000/payment/initialize", {
@@ -91,7 +90,6 @@ export default function CheckoutPage() {
       alert("Failed to initialize payment. Try again.");
     }
   };
- 
 
   const handleCreateOrder = async () => {
     if (!validateForm()) return;

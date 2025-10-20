@@ -2,7 +2,7 @@ import { MenuItem } from "./menuCard";
 
 export const dishes: MenuItem[] = [
   {
-    _id: 1,
+    id: 1,
     name: "Jollof Rice with Grilled Chicken",
     description:
       "A smoky, flavorful classic! Slow-cooked in a rich tomato and pepper sauce, infused with traditional spices, served with perfectly grilled chicken.",
@@ -11,7 +11,7 @@ export const dishes: MenuItem[] = [
     link: "/menu/dishes/jollof-rice",
   },
   {
-    _id: 2,
+    id: 2,
     name: "Egusi Soup with Pounded Yam",
     description:
       "A rich and savory soup made from ground melon seeds, spinach, and assorted meats. Served with smooth, satisfying pounded yam.",
@@ -20,7 +20,7 @@ export const dishes: MenuItem[] = [
     link: "/menu/dishes/egusi-soup",
   },
   {
-    _id: 3,
+    id: 3,
     name: "Grilled Tilapia & Plantain",
     description:
       "Fresh Tilapia marinated in local spices, grilled to perfection, accompanied by sweet fried plantains and spicy pepper sauce.",
@@ -33,7 +33,7 @@ export const dishes: MenuItem[] = [
 
 export const drinks: MenuItem[] = [
   {
-    _id: 1,
+    id: 1,
     name: "Zobo Drink",
     description:
       "Refreshing hibiscus drink infused with spices,Refreshing hibiscus drink infused with .",
@@ -42,7 +42,7 @@ export const drinks: MenuItem[] = [
     link: "/menu/drinks/zobo",
   },
   {
-    _id: 2,
+    id: 2,
     name: "Palm Wine",
     description:
       "Traditional fresh palm wine, chilled to perfection.,Refreshing hibiscus drink infused with ",
@@ -51,7 +51,7 @@ export const drinks: MenuItem[] = [
     link: "/menu/drinks/palm-wine",
   },
   {
-    _id: 3,
+    id: 3,
     name: "Chapman",
     description:
       "A sweet, fruity cocktail with a Nigerian twist.,Refreshing hibiscus drink infused with ",
@@ -63,7 +63,7 @@ export const drinks: MenuItem[] = [
 
 export const wines: MenuItem[] = [
   {
-    _id: 1,
+    id: 1,
     name: "Red Wine (Imported)",
     description: "Full-bodied red wine with rich flavors.",
     price: 8000,
@@ -71,7 +71,7 @@ export const wines: MenuItem[] = [
     link: "/menu/wines/red-wine",
   },
   {
-    _id: 2,
+    id: 2,
     name: "White Wine (Imported)",
     description: "Crisp, chilled white wine with a smooth finish.",
     price: 8500,
@@ -79,7 +79,7 @@ export const wines: MenuItem[] = [
     link: "/menu/wines/white-wine",
   },
   {
-    _id: 3,
+    id: 3,
     name: "Sparkling Wine",
     description: "Perfectly chilled sparkling wine for special occasions.",
     price: 9500,

@@ -187,7 +187,7 @@ export default function Home() {
                       .filter((item) => item.category === "food")
                       .slice(0, 3)
                       .map((item) => (
-                        <MenuCard key={item._id} item={item} />
+                        <MenuCard key={item.id} item={item} />
                       ))}
                   </div>
                 </section>
@@ -200,7 +200,7 @@ export default function Home() {
                       .filter((item) => item.category === "drink")
                       .slice(0, 3)
                       .map((item) => (
-                        <MenuCard key={item._id} item={item} />
+                        <MenuCard key={item.id} item={item} />
                       ))}
                   </div>
                 </section>
@@ -213,7 +213,7 @@ export default function Home() {
                       .filter((item) => item.category === "wine")
                       .slice(0, 3)
                       .map((item) => (
-                        <MenuCard key={item._id} item={item} />
+                        <MenuCard key={item.id} item={item} />
                       ))}
                   </div>
                 </section>

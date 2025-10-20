@@ -4,7 +4,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface MenuItem {
-  _id: string;
+  id: string;
   name: string;
   description: string;
   price: number;
@@ -13,7 +13,7 @@ interface MenuItem {
 }
 
 interface CartItem {
-  _id: string; 
+  id: string;
   menuItem: MenuItem;
   quantity: number;
 }
@@ -63,7 +63,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         },
         body: JSON.stringify({
           userId,
-          menuItemId: item._id,
+          menuItemId: item.id,
           quantity: 1,
         }),
       });

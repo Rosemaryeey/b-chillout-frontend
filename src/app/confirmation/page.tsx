@@ -15,7 +15,7 @@ interface OrderItem {
 }
 
 interface Order {
-  _id: string;
+  id: string;
   totalAmount: number;
   paymentMethod: "paystack" | "transfer";
   customerDetails: {
@@ -49,13 +49,13 @@ export default function OrderConfirmation() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId: order._id }),
+          body: JSON.stringify({ orderId: order.id }),
         }
       );
 
       if (response.ok) {
         // Redirect to success page
-        window.location.href = `/order-success?orderId=${order._id}`;
+        window.location.href = `/order-success?orderId=${order.id}`;
       } else {
         const error = await response.json();
         alert(`❌ Error: ${error.message}`);

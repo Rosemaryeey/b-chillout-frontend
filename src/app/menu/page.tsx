@@ -7,7 +7,7 @@ import CartIcon from "../component/CartIcon";
 import { useCart } from "../context/CartContext";
 
 interface MenuItem {
-  _id: string;
+  id: string;
   name: string;
   description: string;
   price: number;
@@ -64,12 +64,12 @@ export default function MenuPage() {
 
   const handleAddToCart = async (menuItem: MenuItem) => {
     await addToCart(menuItem);
-    setAddedItems((prev) => new Set(prev).add(menuItem._id));
+    setAddedItems((prev) => new Set(prev).add(menuItem.id));
     // Reset "Added" state after 2 seconds
     setTimeout(() => {
       setAddedItems((prev) => {
         const newSet = new Set(prev);
-        newSet.delete(menuItem._id);
+        newSet.delete(menuItem.id);
         return newSet;
       });
     }, 2000);
@@ -103,7 +103,7 @@ export default function MenuPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/menu/${editingItem._id}`,
+        `http://localhost:3000/menu/${editingItem.id}`,
         {
           method: "PUT",
           headers: {
@@ -293,7 +293,7 @@ export default function MenuPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {items.map((item) => (
               <div
-                key={item._id}
+                key={item.id}
                 className="bg-[var(--foreground)] rounded-lg shadow-md overflow-hidden flex flex-col"
               >
                 <img
@@ -327,7 +327,7 @@ export default function MenuPage() {
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDeleteItem(item._id)}
+                          onClick={() => handleDeleteItem(item.id)}
                           className="bg-red-500 text-[var(--foreground)] px-2 py-1 rounded text-sm hover:bg-red-600"
                         >
                           Delete
@@ -336,14 +336,14 @@ export default function MenuPage() {
                     ) : (
                       <button
                         onClick={() => handleAddToCart(item)}
-                        disabled={addedItems.has(item._id)}
+                        disabled={addedItems.has(item.id)}
                         className={`px-4 py-2 rounded text-[var(--foreground)] font-medium transition ${
-                          addedItems.has(item._id)
+                          addedItems.has(item.id)
                             ? "bg-[var(--color-accent)] hover:bg-green-500 cursor-default"
                             : "bg-[var(--color-contrast)] hover:bg-[#a04d18]"
                         }`}
                       >
-                        {addedItems.has(item._id) ? "Added!" : "Add to Cart"}
+                        {addedItems.has(item.id) ? "Added!" : "Add to Cart"}
                       </button>
                     )}
                   </div>
