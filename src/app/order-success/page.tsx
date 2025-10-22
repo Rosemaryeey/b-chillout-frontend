@@ -5,7 +5,7 @@ export const revalidate = 0;
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation"; // ✅ now safe
 import Link from "next/link";
 
 export default function OrderSuccess() {

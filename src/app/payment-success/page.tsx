@@ -6,8 +6,9 @@ export const revalidate = 0;
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation"; // ✅ now safe
 import Link from "next/link";
+
 
 export default function PaymentSuccess() {
   const router = useRouter();
