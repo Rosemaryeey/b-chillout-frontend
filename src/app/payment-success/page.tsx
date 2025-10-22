@@ -2,7 +2,7 @@
 // export const dynamic = "force-dynamic";
 // export const revalidate = 0;
 
-
+import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation"; 
 import { useRouter } from "next/navigation"; 
@@ -43,6 +43,7 @@ export default function PaymentSuccess() {
   }
 
   return (
+    <Suspense fallback={<div>Loading...</div>}> 
     <div
       className="min-h-screen flex items-center justify-center"
       style={{ backgroundColor: "var(--background)" }}
@@ -87,5 +88,6 @@ export default function PaymentSuccess() {
         </Link>
       </div>
     </div>
+    </Suspense>
   );
 }
