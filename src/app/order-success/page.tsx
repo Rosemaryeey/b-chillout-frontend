@@ -4,7 +4,8 @@ export const revalidate = 0;
 
 
 import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation"; // ✅ now safe
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function OrderSuccess() {
