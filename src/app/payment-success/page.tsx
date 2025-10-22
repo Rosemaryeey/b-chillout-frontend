@@ -1,36 +1,37 @@
 "use client";
-// export const dynamic = "force-dynamic";
-// export const revalidate = 0;
 
 import { Suspense } from "react";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation"; 
-import { useRouter } from "next/navigation"; 
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
-
 export default function PaymentSuccess() {
+  // ✅ Suspense ONLY wraps the component using useSearchParams
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PaymentSuccessContent />
+    </Suspense>
+  );
+}
+
+function PaymentSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
 
-  // ✅ Handle client-side only state
   const [isClient, setIsClient] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(true);
 
   useEffect(() => {
-    // ✅ Only run on client-side
     setIsClient(true);
   }, []);
 
-  // ✅ Handle redirect for missing orderId (client-side only)
+  // ✅ Safe redirect — only after hydration
   useEffect(() => {
     if (isClient && !orderId) {
       router.push("/menu");
     }
-  }, [orderId, isClient, router]);
+  }, [isClient, orderId, router]);
 
-  // ✅ Show loading state during SSR
   if (!isClient) {
     return (
       <div
@@ -43,7 +44,6 @@ export default function PaymentSuccess() {
   }
 
   return (
-    <Suspense fallback={<div>Loading...</div>}> 
     <div
       className="min-h-screen flex items-center justify-center"
       style={{ backgroundColor: "var(--background)" }}
@@ -88,6 +88,5 @@ export default function PaymentSuccess() {
         </Link>
       </div>
     </div>
-    </Suspense>
   );
 }
