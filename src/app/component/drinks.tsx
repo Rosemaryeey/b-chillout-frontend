@@ -3,9 +3,10 @@ import MenuCard, { MenuItem } from "./menuCard";
 
 export default function DrinksPage() {
   const [Drinks, setDrinks] = useState<MenuItem[]>([]);
-
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE || "https://b-chillout-backend.onrender.com";
   useEffect(() => {
-    fetch("http://localhost:3000/menu/drink") // your backend API
+    fetch(`${API_BASE}/menu/drink`) // your backend API
       .then((res) => res.json())
       .then((data) => setDrinks(data))
       .catch((err) => console.error(err));

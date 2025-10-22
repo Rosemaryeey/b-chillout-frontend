@@ -23,12 +23,13 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState<
     "food" | "drinks" | "wines"
   >("food");
-
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE || "https://b-chillout-backend.onrender.com";
   useEffect(() => {
     const fetchMenu = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:3000/menu");
+        const response = await fetch(`${API_BASE}/menu`);
         const data = await response.json();
         setMenuItems(data);
         setLoading(false);

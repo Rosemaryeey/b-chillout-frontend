@@ -32,7 +32,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartCount, setCartCount] = useState(0);
 
   const userId = "customer123"; // Replace with actual user ID in production
-  const API_BASE = "http://localhost:3000";
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE ||
+    "https://b-chillout-backend.onrender.com";
 
   const fetchCart = async () => {
     try {

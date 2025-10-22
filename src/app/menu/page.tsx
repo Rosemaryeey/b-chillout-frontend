@@ -25,7 +25,10 @@ export default function MenuPage() {
   const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
 
   const { addToCart, cartCount } = useCart();
-  const API_BASE = "http://localhost:3000";
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE ||
+    "https://b-chillout-backend.onrender.com";
+
 
   // Check if admin is logged in
   useEffect(() => {
@@ -102,20 +105,17 @@ export default function MenuPage() {
     if (!editingItem) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:3000/menu/${editingItem.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "x-admin-password": "MySuperSecurePassword123!", // Use your actual password
-          },
-          body: JSON.stringify({
-            ...editForm,
-            price: parseFloat(editForm.price),
-          }),
-        }
-      );
+      const response = await fetch(`${API_BASE}/menu/${editingItem.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": "MySuperSecurePassword123!", // Use your actual password
+        },
+        body: JSON.stringify({
+          ...editForm,
+          price: parseFloat(editForm.price),
+        }),
+      });
 
       if (response.ok) {
         // Refresh menu
@@ -134,7 +134,7 @@ export default function MenuPage() {
     if (!confirm("Are you sure you want to delete this item?")) return;
 
     try {
-      await fetch(`http://localhost:3000/menu/${itemId}`, {
+      await fetch(`${API_BASE}/menu/${itemId}`, {
         method: "DELETE",
         headers: { "x-admin-password": "MySuperSecurePassword123!" },
       });

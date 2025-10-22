@@ -30,7 +30,8 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(false); // redirect/loading state
   const [errors, setErrors] = useState<Record<string, string>>({});
-
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE || "https://b-chillout-backend.onrender.com";
   // Calculate total
   const total = cartItems.reduce(
     (sum, item) => sum + item.menuItem.price * item.quantity,
@@ -66,7 +67,7 @@ export default function CheckoutPage() {
 
   const initializePaystackPayment = async (orderId: string, amount: number) => {
     try {
-      const res = await fetch("http://localhost:3000/payment/initialize", {
+      const res = await fetch(`${API_BASE}/payment/initialize`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -96,7 +97,7 @@ export default function CheckoutPage() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch("http://localhost:3000/orders", {
+      const response = await fetch(`${API_BASE}/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

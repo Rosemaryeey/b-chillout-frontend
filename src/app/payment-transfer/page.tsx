@@ -7,7 +7,8 @@ import Link from "next/link";
 export default function PaymentTransfer() {
   const [orderId, setOrderId] = useState("");
   const [confirming, setConfirming] = useState(false);
-
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE || "https://b-chillout-backend.onrender.com";
   useEffect(() => {
     const id = localStorage.getItem("orderId");
     if (id) setOrderId(id);
@@ -18,14 +19,11 @@ export default function PaymentTransfer() {
 
     setConfirming(true);
     try {
-      const response = await fetch(
-        "http://localhost:3000/orders/confirm-payment",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId }),
-        }
-      );
+      const response = await fetch(`${API_BASE}/orders/confirm-payment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId }),
+      });
 
       if (response.ok) {
         window.location.href = `/order-success?orderId=${orderId}`;

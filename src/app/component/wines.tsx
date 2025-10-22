@@ -1,12 +1,12 @@
-
 import { useEffect, useState } from "react";
 import MenuCard, { MenuItem } from "./menuCard";
 
 export default function WinesPage() {
   const [Wines, setWines] = useState<MenuItem[]>([]);
-
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE || "https://b-chillout-backend.onrender.com";
   useEffect(() => {
-    fetch("http://localhost:3000/menu/wine") // your backend API
+    fetch(`${API_BASE}/menu/wine`) // your backend API
       .then((res) => res.json())
       .then((data) => setWines(data))
       .catch((err) => console.error(err));

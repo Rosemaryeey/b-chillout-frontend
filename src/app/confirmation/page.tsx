@@ -31,7 +31,8 @@ interface Order {
 export default function OrderConfirmation() {
   const [order, setOrder] = useState<Order | null>(null);
   const [confirming, setConfirming] = useState(false);
-
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE || "https://b-chillout-backend.onrender.com";
   useEffect(() => {
     const storedOrder = localStorage.getItem("lastOrder");
     if (storedOrder) {
@@ -44,14 +45,11 @@ export default function OrderConfirmation() {
 
     setConfirming(true);
     try {
-      const response = await fetch(
-        "http://localhost:3000/orders/confirm-payment",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId: order.id }),
-        }
-      );
+      const response = await fetch(`${API_BASE}/orders/confirm-payment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: order.id }),
+      });
 
       if (response.ok) {
         // Redirect to success page

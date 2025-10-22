@@ -49,6 +49,9 @@ export default function AdminDashboard() {
     const isAdmin = localStorage.getItem("isAdmin") === "true";
     setAdmin(isAdmin);
   }, []);
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE ||
+    "https://b-chillout-backend.onrender.com";
   const [newItem, setNewItem] = useState<NewMenuItem>({
     name: "",
     description: "",
@@ -71,12 +74,12 @@ export default function AdminDashboard() {
   const fetchAllData = async () => {
     try {
       const [ordersRes, menuRes] = await Promise.all([
-        fetch("http://localhost:3000/orders", {
+        fetch(`${API_BASE}/orders`, {
           headers: {
             "x-admin-password": process.env.ADMIN_PASSWORD || "",
           },
         }),
-        fetch("http://localhost:3000/menu"),
+        fetch(`${API_BASE}/menu`),
       ]);
 
       const ordersData = await ordersRes.json();
@@ -93,7 +96,7 @@ export default function AdminDashboard() {
 
   const updateOrderStatus = async (orderId: string, status: string) => {
     try {
-      await fetch(`http://localhost:3000/orders/${orderId}/status`, {
+      await fetch(`${API_BASE}/orders/${orderId}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -109,7 +112,7 @@ export default function AdminDashboard() {
 
   const confirmPayment = async (orderId: string) => {
     try {
-      await fetch(`http://localhost:3000/orders/${orderId}/confirm-payment`, {
+      await fetch(`${API_BASE}/orders/${orderId}/confirm-payment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -129,7 +132,7 @@ export default function AdminDashboard() {
     setSuccess("");
 
     try {
-      const response = await fetch("http://localhost:3000/menu", {
+      const response = await fetch(`${API_BASE}/menu`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -165,7 +168,7 @@ export default function AdminDashboard() {
     if (!confirm("Are you sure you want to delete this item?")) return;
 
     try {
-      await fetch(`http://localhost:3000/menu/${itemId}`, {
+      await fetch(`${API_BASE}/menu/${itemId}`, {
         method: "DELETE",
         headers: {
           "x-admin-password": process.env.ADMIN_PASSWORD || "",

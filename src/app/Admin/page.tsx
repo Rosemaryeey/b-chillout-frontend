@@ -7,13 +7,14 @@ import Link from "next/link";
 export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE || "https://b-chillout-backend.onrender.com";
   // ✅ Only ONE handleLogin function inside the component
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3000/admin/login", {
+      const response = await fetch(`${API_BASE}/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),

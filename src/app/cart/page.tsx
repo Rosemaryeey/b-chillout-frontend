@@ -23,7 +23,8 @@ interface CartItem {
 export default function CartPage() {
   const { cartItems, fetchCart } = useCart();
   const [loading, setLoading] = useState(true);
-
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE || "https://b-chillout-backend.onrender.com";
   useEffect(() => {
     const loadCart = async () => {
       await fetchCart();
@@ -36,7 +37,7 @@ export default function CartPage() {
   const removeItem = async (menuItemId: string) => {
     try {
       const userId = "customer123"; // Replace with actual user ID
-      const response = await fetch("http://localhost:3000/cart/remove", {
+      const response = await fetch(`${API_BASE}/cart/remove`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
