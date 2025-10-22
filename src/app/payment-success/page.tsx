@@ -1,9 +1,7 @@
-// app/payment-success/page.tsx
-
+"use client";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-"use client";
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation"; // ✅ now safe
