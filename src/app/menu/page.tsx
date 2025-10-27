@@ -29,11 +29,17 @@ export default function MenuPage() {
     process.env.NEXT_PUBLIC_API_BASE ||
     "https://b-chillout-backend.onrender.com";
 
-
   // Check if admin is logged in
   useEffect(() => {
     const isAdmin = localStorage.getItem("isAdmin") === "true";
     setAdmin(isAdmin);
+  }, []);
+
+  // Generate persistent guest userId if not logged in
+  useEffect(() => {
+    if (!localStorage.getItem("userId")) {
+      localStorage.setItem("userId", "guest-" + Date.now());
+    }
   }, []);
 
   // Fetch menu based on category and search
