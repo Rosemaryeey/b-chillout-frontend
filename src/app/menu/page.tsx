@@ -8,6 +8,7 @@ import { useCart } from "../context/CartContext";
 
 interface MenuItem {
   id: string;
+  _id?: string;
   name: string;
   description: string;
   price: number;
@@ -297,65 +298,74 @@ export default function MenuPage() {
         {/* Menu items */}
         {!loading && !editingItem && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className="bg-[var(--foreground)] rounded-lg shadow-md overflow-hidden flex flex-col"
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="h-48 w-full object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = "https://placehold.co/400x300?text=No+Image";
-                  }}
-                />
-                <div className="p-5 flex flex-col justify-between flex-1">
-                  <div>
-                    <h3 className="text-xl font-bold text-[var(--background)] mb-2">
-                      {item.name}
-                    </h3>
-                    <p className="text-sm text-[var(--stubborn)]">
-                      {item.description}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between mt-4">
-                    <span className="text-lg font-semibold text-[var(--color-contrast)]">
-                      ₦{item.price.toLocaleString()}
-                    </span>
-                    {admin ? (
-                      <div className="flex gap-2">
+            {items.map((item) => {
+              const realId = item._id || item.id; // ✅ Ensure unique, consistent key
+
+              return (
+                <div
+                  key={realId}
+                  className="bg-[var(--foreground)] rounded-lg shadow-md overflow-hidden flex flex-col"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="h-48 w-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "https://placehold.co/400x300?text=No+Image";
+                    }}
+                  />
+
+                  <div className="p-5 flex flex-col justify-between flex-1">
+                    <div>
+                      <h3 className="text-xl font-bold text-[var(--background)] mb-2">
+                        {item.name}
+                      </h3>
+                      <p className="text-sm text-[var(--stubborn)]">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-4">
+                      <span className="text-lg font-semibold text-[var(--color-contrast)]">
+                        ₦{item.price.toLocaleString()}
+                      </span>
+
+                      {admin ? (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEditItem(item)}
+                            className="bg-blue-500 text-[var(--foreground)] px-2 py-1 rounded text-sm hover:bg-blue-600"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteItem(realId)}
+                            className="bg-red-500 text-[var(--foreground)] px-2 py-1 rounded text-sm hover:bg-red-600"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      ) : (
                         <button
-                          onClick={() => handleEditItem(item)}
-                          className="bg-blue-500 text-[var(--foreground)] px-2 py-1 rounded text-sm hover:bg-blue-600"
+                          onClick={() =>
+                            handleAddToCart({ ...item, id: realId })
+                          } // ✅ always pass correct ID
+                          disabled={addedItems.has(realId)}
+                          className={`px-4 py-2 rounded text-[var(--foreground)] font-medium transition ${
+                            addedItems.has(realId)
+                              ? "bg-[var(--color-accent)] hover:bg-green-500 cursor-default"
+                              : "bg-[var(--color-contrast)] hover:bg-[#a04d18]"
+                          }`}
                         >
-                          Edit
+                          {addedItems.has(realId) ? "Added!" : "Add to Cart"}
                         </button>
-                        <button
-                          onClick={() => handleDeleteItem(item.id)}
-                          className="bg-red-500 text-[var(--foreground)] px-2 py-1 rounded text-sm hover:bg-red-600"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => handleAddToCart(item)}
-                        disabled={addedItems.has(item.id)}
-                        className={`px-4 py-2 rounded text-[var(--foreground)] font-medium transition ${
-                          addedItems.has(item.id)
-                            ? "bg-[var(--color-accent)] hover:bg-green-500 cursor-default"
-                            : "bg-[var(--color-contrast)] hover:bg-[#a04d18]"
-                        }`}
-                      >
-                        {addedItems.has(item.id) ? "Added!" : "Add to Cart"}
-                      </button>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

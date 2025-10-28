@@ -6,7 +6,8 @@ import Link from "next/link";
 import { useCart } from "../context/CartContext";
 
 interface MenuItem {
-  id: string;
+  _id?: string; // MongoDB ID
+  id?: string; // optional fallback if some items use `id`
   name: string;
   description: string;
   price: number;
@@ -23,8 +24,25 @@ interface CartItem {
 export default function CartPage() {
   const { cartItems, fetchCart } = useCart();
   const [loading, setLoading] = useState(true);
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE || "https://b-chillout-backend.onrender.com";
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedUserId = localStorage.getItem("userId");
+      if (savedUserId) {
+        setUserId(savedUserId);
+      } else {
+        const newId = `guest_${Date.now()}`;
+        localStorage.setItem("userId", newId);
+        setUserId(newId);
+      }
+    }
+  }, []);
+
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE ||
+    "https://b-chillout-backend.onrender.com";
+
   useEffect(() => {
     const loadCart = async () => {
       await fetchCart();
@@ -33,30 +51,20 @@ const API_BASE =
     loadCart();
   }, []);
 
-  // Remove item from cart function
   const removeItem = async (menuItemId: string) => {
     try {
-      const userId = "customer123"; // Replace with actual user ID
+      if (!userId) return alert("No user ID found!");
+
       const response = await fetch(`${API_BASE}/cart/remove`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId,
-          menuItemId,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, menuItemId }),
       });
 
-      if (response.ok) {
-        await fetchCart(); // Refresh cart after removal
-      } else {
-        const error = await response.json();
-        alert(`Error: ${error.message}`);
-      }
-    } catch (error) {
-      console.error("Error removing item:", error);
-      alert("Failed to remove item from cart");
+      if (response.ok) await fetchCart();
+      else alert(`Error: ${(await response.json()).message}`);
+    } catch (err) {
+      alert("Failed to remove item");
     }
   };
 
@@ -116,7 +124,11 @@ const API_BASE =
                     <div key={cartItem.id} className="p-6 relative">
                       {/* X icon for removal */}
                       <button
-                        onClick={() => removeItem(cartItem.menuItem.id)}
+                        onClick={() =>
+                          removeItem(
+                            cartItem.menuItem._id ?? cartItem.menuItem.id!
+                          )
+                        }
                         className="absolute top-2 right-2 w-6 h-6 text-[var(--foreground)] rounded-full flex items-center justify-center hover:bg-red-600 transition text-sm font-bold"
                         title="Remove item"
                       >
