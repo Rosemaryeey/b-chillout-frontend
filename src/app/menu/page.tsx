@@ -304,7 +304,7 @@ export default function MenuPage() {
               return (
                 <div
                   key={realId}
-                  className="bg-[var(--foreground)] rounded-lg shadow-md overflow-hidden flex flex-col"
+                  className="bg-[var(--background)] rounded-lg shadow-md overflow-hidden flex flex-col"
                 >
                   <img
                     src={item.image}
@@ -318,16 +318,16 @@ export default function MenuPage() {
 
                   <div className="p-5 flex flex-col justify-between flex-1">
                     <div>
-                      <h3 className="text-xl font-bold text-[var(--background)] mb-2">
+                      <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">
                         {item.name}
                       </h3>
-                      <p className="text-sm text-[var(--stubborn)]">
+                      <p className="text-sm text-[var(--foreground)]">
                         {item.description}
                       </p>
                     </div>
 
                     <div className="flex items-center justify-between mt-4">
-                      <span className="text-lg font-semibold text-[var(--color-contrast)]">
+                      <span className="text-lg font-semibold text-[var(--foreground)]">
                         ₦{item.price.toLocaleString()}
                       </span>
 

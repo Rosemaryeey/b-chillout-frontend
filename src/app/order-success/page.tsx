@@ -1,6 +1,5 @@
 "use client";
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+
 
 
 import { useEffect, useState } from "react";
@@ -16,6 +15,14 @@ export default function OrderSuccess() {
   // ✅ Handle client-side only state
   const [customerName, setCustomerName] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // Suppose you fetch the latest order from localStorage or API
+    const storedOrder = JSON.parse(localStorage.getItem("order") || "{}");
+    if (storedOrder?.customerDetails?.name) {
+      setCustomerName(storedOrder.customerDetails.name);
+    }
+  }, []);
 
   useEffect(() => {
     // ✅ Only run on client-side

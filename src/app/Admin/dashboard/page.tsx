@@ -71,28 +71,31 @@ export default function AdminDashboard() {
     fetchAllData();
   }, []);
 
-  const fetchAllData = async () => {
-    try {
-      const [ordersRes, menuRes] = await Promise.all([
-        fetch(`${API_BASE}/orders`, {
-          headers: {
-            "x-admin-password": process.env.ADMIN_PASSWORD || "",
-          },
-        }),
-        fetch(`${API_BASE}/menu`),
-      ]);
+const fetchAllData = async () => {
+  try {
+    const [ordersRes, menuRes] = await Promise.all([
+      fetch(`${API_BASE}/orders`, {
+        headers: {
+          "x-admin-password": process.env.ADMIN_PASSWORD || "",
+        },
+      }),
+      fetch(`${API_BASE}/menu`),
+    ]);
 
-      const ordersData = await ordersRes.json();
-      const menuData = await menuRes.json();
+    const ordersData = await ordersRes.json();
+    const menuData = await menuRes.json();
 
-      setOrders(ordersData);
-      setMenuItems(menuData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Ensure orders is an array
+    setOrders(Array.isArray(ordersData) ? ordersData : ordersData.orders || []);
+    setMenuItems(Array.isArray(menuData) ? menuData : menuData.menu || []);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    setOrders([]);
+    setMenuItems([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const updateOrderStatus = async (orderId: string, status: string) => {
     try {
@@ -200,7 +203,7 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 py-2">
           <div className="flex justify-between items-center">
             <h1
-              className="text-2xl font-bold"
+              className="md:text-2xl text-base font-bold"
               style={{ color: "var(--color-accent)" }}
             >
               Admin Dashboard
@@ -208,7 +211,7 @@ export default function AdminDashboard() {
             <div className="flex gap-4">
               <button
                 onClick={() => setShowAddForm(!showAddForm)}
-                className="px-4 py-2 bg-blue-500 text-[var(--foreground)]
+                className="md:px-4 px-2  md:py-2 py-1  md:text-sm text-xs bg-blue-500 text-[var(--foreground)]
                  rounded hover:bg-blue-600"
               >
                 {showAddForm ? "Cancel" : "Add Menu Item"}
@@ -218,7 +221,7 @@ export default function AdminDashboard() {
                   localStorage.removeItem("isAdmin");
                   window.location.href = "/";
                 }}
-                className="px-4 py-2 bg-gray-500 text-[var(--foreground)] rounded hover:bg-gray-600"
+                className="md:px-4 px-2 md:py-2 py-1 md:text-sm text-xs bg-gray-500 text-[var(--foreground)] rounded hover:bg-gray-600"
               >
                 Logout
               </button>
@@ -229,7 +232,7 @@ export default function AdminDashboard() {
                     onClick={() => {
                       router.push("/Admin"); // ✅ Correct Next.js navigation
                     }}
-                    className="px-6 py-2 bg-gray-500 text-[var(--foreground)] rounded hover:bg-gray-600"
+                    className="md:px-6 px-2 md:py-2 py-2 md:text-sm text-xs bg-gray-500 text-[var(--foreground)] rounded hover:bg-gray-600"
                   >
                     MENU
                   </button>

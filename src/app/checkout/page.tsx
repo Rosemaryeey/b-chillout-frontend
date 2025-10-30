@@ -1,6 +1,6 @@
 // app/checkout/page.tsx
 "use client";
-
+declare const PaystackPop: any; 
 import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "../context/CartContext";
@@ -65,74 +65,74 @@ const API_BASE =
     return Object.keys(newErrors).length === 0;
   };
 
-  const initializePaystackPayment = async (orderId: string, amount: number) => {
-    try {
-      const res = await fetch(`${API_BASE}/payment/initialize`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderId,
-          email: customerDetails.email,
-          amount,
-        }),
-      });
+const initializePaystackPayment = async (orderId: string, amount: number) => {
+  try {
+    const res = await fetch(`${API_BASE}/payment/initialize`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        orderId,
+        email: customerDetails.email,
+        amount: Math.round(amount * 100), // convert to kobo
+      }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (data.status && data.data.authorization_url) {
-        window.location.href = data.data.authorization_url;
-      } else {
-        alert("Payment initialization failed.");
-        console.error("Paystack response:", data);
-      }
-    } catch (err: any) {
-      // ✅ Add type annotation
-      console.error("Paystack initialization error:", err);
-      alert("Failed to initialize payment. Try again.");
+    if (data.status && data.data.authorization_url) {
+      window.location.href = data.data.authorization_url; // redirect to Paystack
+    } else {
+      alert("Payment initialization failed.");
+      console.error("Paystack response:", data);
     }
-  };
+  } catch (err: any) {
+    console.error("Paystack initialization error:", err);
+    alert("Failed to initialize payment. Try again.");
+  }
+};
 
-  const handleCreateOrder = async () => {
-    if (!validateForm()) return;
+const handleCreateOrder = async () => {
+  if (!validateForm()) return;
 
-    setIsSubmitting(true);
-    try {
-      const response = await fetch(`${API_BASE}/orders`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: "customer123",
-          customerDetails,
-          paymentMethod,
-        }),
-      });
+  const userId = localStorage.getItem("userId");
+  if (!userId) {
+    alert("No user ID found");
+    return;
+  }
 
-      if (!response.ok) {
-        const error = await response.json();
-        alert(`Error: ${error.message}`);
-        return;
-      }
+  setIsSubmitting(true);
 
-      const orderData = await response.json();
+  try {
+    const response = await fetch(`${API_BASE}/orders`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, customerDetails, paymentMethod }),
+    });
 
-      if (paymentMethod === "paystack") {
-        // ✅ Use the single function
-        await initializePaystackPayment(
-          orderData.orderId,
-          orderData.totalAmount
-        );
-      } else {
-        localStorage.setItem("orderId", orderData.orderId);
-        window.location.href = "/payment-transfer";
-      }
-    } catch (error: any) {
-      // ✅ Add type annotation
-      console.error("Error creating order:", error);
-      alert("Failed to create order. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+    const orderData = await response.json();
+
+    if (!response.ok) {
+      alert(`Error: ${orderData.message}`);
+      return;
     }
-  };
+
+    if (paymentMethod === "paystack") {
+      await initializePaystackPayment(orderData.orderId, orderData.totalAmount);
+    } else {
+      localStorage.setItem("orderId", orderData.orderId);
+      window.location.href = "/payment-transfer";
+    }
+  } catch (err: any) {
+    console.error("Error creating order:", err);
+    alert("Failed to create order. Try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+console.log("Paystack callback URL:", process.env.NEXT_PUBLIC_BASE_URL);
+
+
+
 
   return (
     <div

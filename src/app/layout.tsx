@@ -42,6 +42,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {!hideLayout && <Footer />}
           </CartProvider>
         </ThemeProvider>
+        <script src="https://js.paystack.co/v1/inline.js"></script>
       </body>
     </html>
   );
