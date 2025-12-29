@@ -1,6 +1,6 @@
 // app/checkout/page.tsx
 "use client";
-declare const PaystackPop: any; 
+declare const PaystackPop: any;
 import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "../context/CartContext";
@@ -30,8 +30,9 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(false); // redirect/loading state
   const [errors, setErrors] = useState<Record<string, string>>({});
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE || "https://b-chillout-backend.onrender.com";
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE ||
+    "https://b-chillout-backend.onrender.com";
   // Calculate total
   const total = cartItems.reduce(
     (sum, item) => sum + item.menuItem.price * item.quantity,
@@ -65,74 +66,87 @@ const API_BASE =
     return Object.keys(newErrors).length === 0;
   };
 
-const initializePaystackPayment = async (orderId: string, amount: number) => {
-  try {
-    const res = await fetch(`${API_BASE}/payment/initialize`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        orderId,
-        email: customerDetails.email,
-        amount: Math.round(amount * 100), // convert to kobo
-      }),
-    });
+  const initializePaystackPayment = async (orderId: string, amount: number) => {
+    try {
+      const res = await fetch(`${API_BASE}/payment/initialize`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId,
+          email: customerDetails.email,
+          amount: Math.round(amount * 100), // convert to kobo
+        }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.status && data.data.authorization_url) {
-      window.location.href = data.data.authorization_url; // redirect to Paystack
-    } else {
-      alert("Payment initialization failed.");
-      console.error("Paystack response:", data);
+      if (data.status && data.data.authorization_url) {
+        window.location.href = data.data.authorization_url; // redirect to Paystack
+      } else {
+        alert("Payment initialization failed.");
+        console.error("Paystack response:", data);
+      }
+    } catch (err: any) {
+      console.error("Paystack initialization error:", err);
+      alert("Failed to initialize payment. Try again.");
     }
-  } catch (err: any) {
-    console.error("Paystack initialization error:", err);
-    alert("Failed to initialize payment. Try again.");
-  }
-};
+  };
 
-const handleCreateOrder = async () => {
-  if (!validateForm()) return;
+  const handleCreateOrder = async () => {
+    if (!validateForm()) return;
 
-  const userId = localStorage.getItem("userId");
-  if (!userId) {
-    alert("No user ID found");
-    return;
-  }
-
-  setIsSubmitting(true);
-
-  try {
-    const response = await fetch(`${API_BASE}/orders`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, customerDetails, paymentMethod }),
-    });
-
-    const orderData = await response.json();
-
-    if (!response.ok) {
-      alert(`Error: ${orderData.message}`);
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      alert("No user ID found");
       return;
     }
 
+    setIsSubmitting(true);
+
     if (paymentMethod === "paystack") {
-      await initializePaystackPayment(orderData.orderId, orderData.totalAmount);
+      // For Paystack, create order first then redirect to payment
+      try {
+        const response = await fetch(`${API_BASE}/orders`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, customerDetails, paymentMethod }),
+        });
+
+        const orderData = await response.json();
+
+        if (!response.ok) {
+          alert(`Error: ${orderData.message}`);
+          return;
+        }
+
+        await initializePaystackPayment(
+          orderData.orderId,
+          orderData.totalAmount
+        );
+      } catch (err: any) {
+        console.error("Error creating order:", err);
+        alert("Failed to create order. Try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
     } else {
-      localStorage.setItem("orderId", orderData.orderId);
+      // For bank transfer, store order details and redirect to payment page
+      // Order will be created after payment confirmation
+      const orderDetails = {
+        userId,
+        customerDetails,
+        paymentMethod,
+        totalAmount: total,
+        cartItems: cartItems, // Include cart items for order creation
+      };
+      localStorage.setItem("pendingOrder", JSON.stringify(orderDetails));
+      // Clear cart after storing pending order
+      localStorage.removeItem("cart");
       window.location.href = "/payment-transfer";
+      setIsSubmitting(false);
     }
-  } catch (err: any) {
-    console.error("Error creating order:", err);
-    alert("Failed to create order. Try again.");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-console.log("Paystack callback URL:", process.env.NEXT_PUBLIC_BASE_URL);
-
-
-
+  };
+  console.log("Paystack callback URL:", process.env.NEXT_PUBLIC_BASE_URL);
 
   return (
     <div

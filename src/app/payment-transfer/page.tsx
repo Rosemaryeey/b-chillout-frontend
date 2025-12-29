@@ -5,34 +5,45 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function PaymentTransfer() {
-  const [orderId, setOrderId] = useState("");
+  const [pendingOrder, setPendingOrder] = useState<any>(null);
   const [confirming, setConfirming] = useState(false);
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE || "https://b-chillout-backend.onrender.com";
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE ||
+    "https://b-chillout-backend.onrender.com";
   useEffect(() => {
-    const id = localStorage.getItem("orderId");
-    if (id) setOrderId(id);
+    const orderData = localStorage.getItem("pendingOrder");
+    if (orderData) {
+      setPendingOrder(JSON.parse(orderData));
+    }
   }, []);
 
   const handleConfirmPayment = async () => {
-    if (!orderId) return;
+    if (!pendingOrder) return;
 
     setConfirming(true);
     try {
-      const response = await fetch(`${API_BASE}/orders/confirm-payment`, {
+      // Create the order directly with confirmed status
+      const response = await fetch(`${API_BASE}/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId }),
+        body: JSON.stringify({
+          ...pendingOrder,
+          paymentStatus: "confirmed", // Set to confirmed since payment is confirmed
+        }),
       });
 
-      if (response.ok) {
-        window.location.href = `/order-success?orderId=${orderId}`;
-      } else {
-        const error = await response.json();
-        alert(`❌ Error: ${error.message}`);
+      const orderData = await response.json();
+
+      if (!response.ok) {
+        alert(`❌ Error: ${orderData.message}`);
+        return;
       }
+
+      // Clear the pending order and redirect
+      localStorage.removeItem("pendingOrder");
+      window.location.href = `/order-success?orderId=${orderData.orderId}`;
     } catch (error) {
-      alert("❌ Failed to confirm payment. Please try again.");
+      alert("❌ Failed to create order. Please try again.");
     } finally {
       setConfirming(false);
     }
@@ -153,14 +164,14 @@ const API_BASE =
           {/* Payment Confirmation Button */}
           <button
             onClick={handleConfirmPayment}
-            disabled={confirming || !orderId}
+            disabled={confirming || !pendingOrder}
             className="px-8 py-4 bg-[var(--color-accent)] text-white rounded-lg hover:bg-[var(--color-accent-hover)] transition font-bold text-lg"
             style={{
               backgroundColor:
-                confirming || !orderId
+                confirming || !pendingOrder
                   ? "var(--color-contrast)"
                   : "var(--color-accent)",
-              cursor: confirming || !orderId ? "not-allowed" : "pointer",
+              cursor: confirming || !pendingOrder ? "not-allowed" : "pointer",
             }}
           >
             {confirming ? "Processing..." : "I Have Sent Payment ✅"}

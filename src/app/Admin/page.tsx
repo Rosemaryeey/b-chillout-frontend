@@ -7,8 +7,9 @@ import Link from "next/link";
 export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE || "https://b-chillout-backend.onrender.com";
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE ||
+    "https://b-chillout-backend.onrender.com";
   // ✅ Only ONE handleLogin function inside the component
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +25,7 @@ const API_BASE =
 
       if (data.success) {
         localStorage.setItem("isAdmin", "true");
+        console.log("Admin login successful, localStorage set");
         window.location.href = "/Admin/dashboard";
       } else {
         setError("Invalid password");
@@ -73,4 +75,3 @@ const API_BASE =
     </div>
   );
 }
-

@@ -12,7 +12,6 @@ interface MenuItem {
   category: string;
 }
 
-
 interface CartItem {
   id: string;
   menuItem: MenuItem;
@@ -55,6 +54,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const response = await fetch(`${API_BASE}/cart/${userId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
 
       if (data.items) {
@@ -71,6 +73,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (error) {
       console.error("Error fetching cart:", error);
+      // Optionally, show a user-friendly message or retry logic
+      // For now, keep cart empty but log the issue
     }
   };
 
@@ -78,25 +82,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (!userId) return;
 
     // ✅ DEBUG FIRST — we inspect before firing API
-   console.log("DEBUG: Request body payload:", {
-     userId,
-     body: JSON.stringify({
-       userId,
-       menuItemId: item._id ?? item.id,
-       quantity: 1,
-     }),
+    console.log("DEBUG: Request body payload:", {
+      userId,
+      body: JSON.stringify({
+        userId,
+        menuItemId: item._id ?? item.id,
+        quantity: 1,
+      }),
 
-     quantity: 1,
-   });
+      quantity: 1,
+    });
 
     try {
       const response = await fetch(`${API_BASE}/cart/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-        userId,
-        menuItemId: item.id || (item as any)._id,
-        quantity: 1 }),
+        body: JSON.stringify({
+          userId,
+          menuItemId: item.id || (item as any)._id,
+          quantity: 1,
+        }),
       });
 
       const data = await response.json();
