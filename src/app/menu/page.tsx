@@ -39,7 +39,7 @@ export default function MenuPage() {
   // Generate persistent guest userId if not logged in
   useEffect(() => {
     if (!localStorage.getItem("userId")) {
-      localStorage.setItem("userId", "guest-" + Date.now());
+      localStorage.setItem("userId", "guest_" + Date.now());
     }
   }, []);
 
