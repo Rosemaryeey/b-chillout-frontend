@@ -1,26 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
-
 export default function OrderSuccess() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <OrderSuccessContent />
+    </Suspense>
+  );
+}
+
+function OrderSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
 
-  // ✅ Handle client-side only state
   const [customerName, setCustomerName] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // ✅ Only run on client-side
     setIsClient(true);
+  }, []);
 
-    // Get customer name from localStorage (client-side only)
+  useEffect(() => {
+    if (isClient && !orderId) {
+      router.push("/menu");
+    }
+  }, [isClient, orderId, router]);
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
       const storedOrder = localStorage.getItem("lastOrder");
       if (storedOrder) {
@@ -34,14 +44,6 @@ export default function OrderSuccess() {
     }
   }, []);
 
-  // ✅ Handle redirect for missing orderId (client-side only)
-  useEffect(() => {
-    if (isClient && !orderId) {
-      router.push("/menu");
-    }
-  }, [orderId, isClient, router]);
-
-  // ✅ Show loading state during SSR
   if (!isClient) {
     return (
       <div
