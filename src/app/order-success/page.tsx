@@ -1,6 +1,9 @@
 "use client";
+
 export const dynamic = "force-dynamic";
-import { Suspense, useEffect, useState } from "react";
+export const runtime = "edge"; // optional, but ensures consistency
+
+import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -28,7 +31,7 @@ export default function OrderSuccess() {
       if (storedOrder) {
         try {
           const order = JSON.parse(storedOrder);
-          setCustomerName(order.customerDetails.name);
+          setCustomerName(order.customerDetails?.name || null);
         } catch (error) {
           console.error("Error parsing order from localStorage:", error);
         }
@@ -83,7 +86,6 @@ export default function OrderSuccess() {
           className="rounded-lg shadow-md p-8 text-center"
           style={{ backgroundColor: "var(--background)" }}
         >
-          {/* Success Icon */}
           <div
             className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center"
             style={{ backgroundColor: "var(--color-accent)" }}
@@ -129,7 +131,6 @@ export default function OrderSuccess() {
             </p>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/menu"
