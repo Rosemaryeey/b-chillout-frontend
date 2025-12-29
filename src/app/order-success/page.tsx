@@ -1,18 +1,10 @@
 "use client";
-
+export const dynamic = "force-dynamic";
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function OrderSuccess() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <OrderSuccessContent />
-    </Suspense>
-  );
-}
-
-function OrderSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
